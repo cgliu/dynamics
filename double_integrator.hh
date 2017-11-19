@@ -25,9 +25,6 @@ template <> struct DynamicSystem_traits<DoubleIntegrator> {
 class DoubleIntegrator : public DynamicSystem <DoubleIntegrator>
 {
 public:
-    using StateVector   = DynamicSystem_traits<DoubleIntegrator>::StateVector;
-    using ControlVector = DynamicSystem_traits<DoubleIntegrator>::ControlVector;
-
     inline static int x_dim() { return DynamicSystem_traits<DoubleIntegrator>::x_dim_;}
     inline static int u_dim() { return DynamicSystem_traits<DoubleIntegrator>::u_dim_;}
 
