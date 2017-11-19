@@ -41,5 +41,5 @@ public:
             dxdt[1] = u[0];
             return dxdt;
         }
-    } continuous_dynamics;
+    } continuous_dynamics_impl;
 };

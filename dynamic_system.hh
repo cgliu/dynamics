@@ -15,31 +15,37 @@ public:
     using StateVector   = typename DynamicSystem_traits<Derived>::StateVector;
     using ControlVector = typename DynamicSystem_traits<Derived>::ControlVector;
 
-    // Static polymophism
-    StateVector continuous_dynamics(StateVector x, ControlVector u);
+    StateVector continuous_dynamics(const StateVector & x, const ControlVector & u);
 
-    StateVector discrete_dynamics(StateVector x, ControlVector u, double dt);
+    StateVector discrete_dynamics(const StateVector& x, const ControlVector& u, double dt);
 
-    void print(StateVector, ControlVector, double);
+    void print(const StateVector &, const ControlVector&, double);
+
+private:
+    Derived& impl() {
+        return *static_cast<Derived*>(this);
+    }
 };
 
 template <typename Derived>
 typename DynamicSystem_traits<Derived>::StateVector
-DynamicSystem<Derived>::continuous_dynamics(StateVector x, ControlVector u)
+DynamicSystem<Derived>::continuous_dynamics(const StateVector & x, const ControlVector & u)
 {
-    return static_cast<Derived *> (this)->continuous_dynamics(x, u);
+    // Have a different function name for implementation to avoid dead loop
+    // which happens when you forget to implement a 'virtual' function
+    return impl().continuous_dynamics_impl(x, u);
 }
 
 template <typename Derived>
 typename DynamicSystem_traits<Derived>::StateVector
-DynamicSystem<Derived>::discrete_dynamics(StateVector x, ControlVector u, double dt)
+DynamicSystem<Derived>::discrete_dynamics(const StateVector & x, const ControlVector & u, double dt)
 {
-    return ODE_RK4(static_cast<Derived *> (this)->continuous_dynamics,
+    return ODE_RK4(impl().continuous_dynamics_impl,
                    x, u, dt);
 }
 
 template <typename Derived>
-void DynamicSystem<Derived>::print(StateVector x, ControlVector u, double t)
+void DynamicSystem<Derived>::print(const StateVector & x, const ControlVector & u, double t)
 {
     std::cout << t << " ";
     std::cout << x.transpose() << " ";
